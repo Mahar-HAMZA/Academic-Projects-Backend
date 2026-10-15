@@ -29,6 +29,6 @@ Academic-Projects/
 
 ## 🛠️ Tech Stack & Design Tools
 
-- **Prototyping & UI/UX:** Figma
+- **Prototyping & UI/UX:** Figma, Draw.io
 - **Documentation & Reports:** LaTeX, Markdown, MS Word
 - **Version Control:** Git, GitHub
