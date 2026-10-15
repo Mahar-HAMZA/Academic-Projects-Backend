@@ -8,6 +8,7 @@ Welcome to my central repository containing academic software engineering projec
 
 ```text
 Academic-Projects/
+│
 ├── Campus-Emergency-Assistance-CEA/
 │   ├── README.md               # CEA Project details & prototype showcase
 │   ├── assets/                 # PNG Screenshots & UI flow diagrams
@@ -15,7 +16,7 @@ Academic-Projects/
 │   └── docs/                   # HCI Reports & documentation
 │
 └── [Future-Projects]/          # Other semester projects and labs
-
+```
 
 # 📌 Featured Projects
 
