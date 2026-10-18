@@ -1,4 +1,42 @@
-PyQt6
-google-genai
-pyperclip
-pynput
+# =====================================================
+#  Desktop AI Assistant - requirements.txt
+#  Install (Windows, virtual environment ke andar):
+#      pip install -r requirements.txt
+#  Naya package install karo to is file mein uski line add karo
+#  aur PR mein team ko batao.
+# =====================================================
+
+# -----------------------------------------------------
+#  COMMON (sab members ko chahiye)
+# -----------------------------------------------------
+PySide6>=6.6            # GUI framework (overlay window, tray icon)
+platformdirs>=4.0       # settings/data folder ka sahi path (Windows/Linux/Mac)
+
+# -----------------------------------------------------
+#  MEMBER A: UI and App Shell
+#  Folders: assistant/ui/, assets/, installer/
+# -----------------------------------------------------
+markdown>=3.5           # AI ke jawab (markdown) ko HTML mein convert karna
+Pygments>=2.17          # code blocks ki syntax highlighting
+pyinstaller>=6.0        # app ko .exe mein convert karna (Week 4)
+
+# -----------------------------------------------------
+#  MEMBER B: AI and Data
+#  Folders: assistant/ai/, assistant/storage/
+# -----------------------------------------------------
+google-genai>=1.0       # Gemini API client (streaming + image support)
+keyring>=24.0           # API key Windows Credential Manager mein safe rakhna
+ollama>=0.3             # Local offline model support (Ollama)
+# sqlite3 Python ke saath built-in hai, install karne ki zaroorat nahi
+
+# -----------------------------------------------------
+#  MEMBER C: System Integration, Testing and Docs
+#  Folders: assistant/system/, tests/, docs/
+# -----------------------------------------------------
+pynput>=1.7             # global hotkey (Ctrl+Space) aur Ctrl+C simulate karna
+pyperclip>=1.8          # clipboard read/write (selected text)
+mss>=9.0                # fast screenshot capture
+Pillow>=10.0            # image processing (screenshot ko PNG bytes banana)
+psutil>=5.9             # active app/process ka naam pata karna
+pywin32>=306; sys_platform == "win32"   # active window detect (sirf Windows)
+pytest>=8.0             # unit tests
