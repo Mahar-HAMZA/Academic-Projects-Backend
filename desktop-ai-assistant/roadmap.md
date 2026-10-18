@@ -1,382 +1,203 @@
-# Desktop AI Assistant: 1-Month Roadmap and Team Workflow
+# Desktop AI Assistant: Team Roadmap (Overview)
 
-**Duration:** 19 October 2026 – 15 November 2026 (4 Weeks)  
-**Team:** 3 Members (A, B, and C)  
-**Platform:** Windows  
-**Technology:** Python 3.11+ and PySide6
+**Duration:** 19 October 2026 – 15 November 2026 (4 Weeks)
+**Platform:** Windows 10/11 | **Language:** Python 3.11+ | **GUI:** PySide6
+**Repository owner:** Member C
 
----
+This file is the shared overview for the whole team. Each member also has a detailed personal guide:
 
-## 1. Team Roles and Responsibilities
-
-Each team member is responsible for a specific part of the project. This will help everyone work independently and reduce merge conflicts.
-
-| Member | Role | Responsible Folders |
+| Member | Part | Detailed guide |
 |---|---|---|
-| **A** | UI and App Shell (Team Lead) | `assistant/ui/`, `assets/`, `installer/` |
-| **B** | AI and Data | `assistant/ai/`, `assistant/storage/` |
-| **C** | System Integration, Testing, and Documentation | `assistant/system/`, `tests/`, `README.md`, `docs/` |
-
-**Important:** Only Member A can directly edit `main.py` and `assistant/config.py`. Other members must request changes through a Pull Request (PR).
-
-### Member A: UI and App Shell
-
-- Create a floating assistant bubble and chat window.
-- Make the chat window frameless, always on top, and draggable.
-- Add a system tray icon with Open, Settings, and Quit options.
-- Create a settings window for the API key, keyboard shortcut, and AI model.
-- Display Markdown text and code blocks.
-- Add a button to copy responses.
-- Implement dark and light themes.
-- Build the Windows `.exe` using PyInstaller.
-- Create an installer using Inno Setup.
-
-### Member B: AI and Data
-
-- Connect Gemini using the `google-genai` library.
-- Implement streaming responses so text appears as it is generated.
-- Create prompts for general questions, coding, lectures, and screen explanations.
-- Store recent conversation messages as context.
-- Save chat history in an SQLite database.
-- Add Ollama support for running local AI models.
-- Handle errors such as no internet, invalid API keys, and rate limits.
-
-### Member C: System Integration, Testing, and Documentation
-
-- Implement global keyboard shortcuts using `pynput`.
-- Capture selected text by simulating `Ctrl+C` and restoring the clipboard afterward.
-- Capture screenshots using `mss` and `Pillow`.
-- Detect the active application, such as VS Code, a browser, or another application.
-- Add an option to start the assistant automatically when Windows starts.
-- Write unit and integration tests.
-- Report bugs and maintain project documentation.
-- Prepare the README, demo video, and presentation slides.
+| **A** | GUI (everything the user sees) | [docs/MEMBER_A_GUI.md](docs/MEMBER_A_GUI.md) |
+| **B** | Backend (AI + data) | [docs/MEMBER_B_BACKEND.md](docs/MEMBER_B_BACKEND.md) |
+| **C** | System integration, repo owner, testing, docs, release | [docs/MEMBER_C_SYSTEM_OWNER.md](docs/MEMBER_C_SYSTEM_OWNER.md) |
 
 ---
 
-## 2. Shared Interfaces
+## 1. What We Are Building
 
-**Week 1, Day 1: All team members must agree on these interfaces.**
+A small AI assistant that lives on the screen as a floating bubble. The user is working in VS Code, a browser lecture, LeetCode, etc. They press a hotkey or click the bubble, a small chat window opens, and they can ask anything (or let the assistant explain their selected text or their whole screen) without switching apps.
 
-Before working separately, the team should decide on the function names, parameters, and return types. This will allow each member to develop their part without waiting for the others.
-
-### AI Client — Member B
-
-File: `assistant/ai/client.py`
-
-```python
-def ask(
-    prompt: str,
-    image: bytes | None = None,
-    mode: str = "general"
-):
-    """Generate a response and yield text chunks."""
 ```
-
-This function sends a prompt to the AI and returns the response in small chunks as it is generated.
-
-### System Capture — Member C
-
-File: `assistant/system/capture.py`
-
-```python
-def get_selected_text() -> str:
-    ...
-
-def take_screenshot() -> bytes:
-    ...  # Returns PNG image bytes
-
-def get_active_app() -> str:
-    ...  # Returns "vscode", "browser", or "other"
+ Hotkey / Bubble click
+        |
+        v
+ [C] capture selected text / screenshot / active app
+        |
+        v
+ [A] GUI window  --->  [B] AI client (Gemini / Ollama) + history
+        ^                          |
+        |__________ streamed answer _|
 ```
-
-These functions capture selected text, take screenshots, and identify the currently active application.
-
-### Global Hotkey — Member C
-
-File: `assistant/system/hotkey.py`
-
-```python
-def register_hotkey(combo: str, callback) -> None:
-    ...
-```
-
-This function registers a keyboard shortcut and runs the callback when the shortcut is pressed.
-
-### Settings Storage — Member B
-
-File: `assistant/storage/settings.py`
-
-```python
-def get_api_key() -> str:
-    ...
-
-def save_api_key(key: str) -> None:
-    ...
-```
-
-These functions retrieve and save the user's API key securely.
-
-**Development rule:** Until the actual functions are ready, use temporary dummy functions that return sample data. This allows Member A to build and test the UI without waiting for Members B and C.
 
 ---
 
-## 3. Week-by-Week Development Plan
+## 2. Roles and Folder Ownership
 
-### Week 1: Foundation (19–25 October)
+Each member owns specific folders. Do not edit files outside your folders without telling the owner (reason: this avoids merge conflicts).
 
-| Member | Tasks |
-|---|---|
-| **A** | Set up the project structure, create the floating bubble and chat window, add the system tray icon, and build a basic settings window. |
-| **B** | Connect Gemini without streaming first, store the API key securely using `keyring`, and implement basic error messages. |
-| **C** | Set up GitHub branches, issues, and a project board. Implement the global hotkey, selected-text capture, and `requirements.txt`. |
-
-**Milestone 1 — 25 October:** Pressing the hotkey opens the assistant, and users can ask questions and receive Gemini responses.
-
-### Week 2: Core Features (26 October–1 November)
-
-| Member | Tasks |
-|---|---|
-| **A** | Display streaming responses, support Markdown and code blocks, add a copy button, and improve the chat interface. |
-| **B** | Implement streaming responses, conversation memory, SQLite chat history, and New Chat and History features. |
-| **C** | Add active-window detection and screenshot capture, and write the first unit tests. |
-
-**Milestone 2 — 1 November:** Streaming chat, chat history, and the Explain This feature for selected text are working.
-
-### Week 3: Smart Features (2–8 November)
-
-| Member | Tasks |
-|---|---|
-| **A** | Add an Explain My Screen button, dark and light themes, animations, and UI improvements. |
-| **B** | Add context-aware prompts for coding, lectures, and general questions. Implement screenshot input for Gemini and add the Ollama provider. |
-| **C** | Add Windows startup support, perform integration testing, create a bug list, and begin the README and architecture diagram. |
-
-**Milestone 3 — 8 November:** All major features are complete, including screen explanation, different context modes, and Ollama support.
-
-### Week 4: Packaging and Presentation (9–15 November)
-
-| Member | Tasks |
-|---|---|
-| **A** | Build the Windows `.exe` using PyInstaller, create the installer using Inno Setup, and fix the remaining UI issues. |
-| **B** | Improve error handling, handle API rate limits, clean up the code, and add comments. |
-| **C** | Test the application on 2–3 different laptops, finalize the README, record a demo video, and prepare presentation slides. |
-
-**Milestone 4 — 15 November:** Release version 1.0 on GitHub Releases and prepare the final demo.
-
-> **Important:** Keep the last two days of Week 4 for bug fixing and presentation practice. Do not add any new features during this time.
+| Member | Role | Folders owned |
+|---|---|---|
+| **A** | GUI | `assistant/ui/`, `assets/`, `installer/`, `main.py`, `assistant/config.py` |
+| **B** | Backend | `assistant/ai/`, `assistant/storage/` |
+| **C** | System, Owner, Tests, Docs | `assistant/system/`, `tests/`, `docs/`, `README.md`, `requirements.txt`, `.github/` |
 
 ---
 
-## 4. GitHub Workflow
+## 3. Shared Interfaces (Contracts)
 
-Use GitHub to organize tasks, track progress, review code, and manage teamwork.
+**Week 1, Day 1:** all three members agree on these. Until the real code exists, each owner pushes a *dummy version* that returns fake data, so nobody waits for anybody.
 
-### 4.1 Initial Setup
+```python
+# assistant/ai/client.py                       (Member B)
+def ask(prompt: str, image: bytes | None = None, mode: str = "general"):
+    """Generator. Yields response text chunks as they arrive."""
 
-Member A or C should complete the following steps:
+# assistant/storage/settings.py                (Member B)
+def get_api_key() -> str: ...
+def save_api_key(key: str) -> None: ...
 
-1. The repository owner must add the other two members through **Settings → Collaborators**, granting them write access.
-2. Create a GitHub Issue for each task, such as "Add Global Hotkey" or "Implement Streaming Responses." Assign each issue to a team member and set a milestone.
-3. Create a Kanban board in the Projects tab with these columns:
+# assistant/storage/history.py                 (Member B)
+def create_chat(title: str = "New chat") -> int: ...
+def add_message(chat_id: int, role: str, content: str) -> None: ...
+def get_messages(chat_id: int) -> list[dict]: ...    # [{"role": "user", "content": "..."}]
+def list_chats() -> list[dict]: ...                  # [{"id": 1, "title": "...", "created_at": "..."}]
+def delete_chat(chat_id: int) -> None: ...
 
-   `To Do → In Progress → Review → Done`
+# assistant/system/capture.py                  (Member C)
+def get_selected_text() -> str: ...
+def take_screenshot() -> bytes: ...            # PNG bytes
+def get_active_app() -> str: ...               # "vscode" | "browser" | "other"
 
-4. Create labels for organizing tasks:
+# assistant/system/hotkey.py                   (Member C)
+def register_hotkey(combo: str, callback) -> None: ...   # e.g. "ctrl+shift+space"
+def stop_hotkey() -> None: ...
 
-   - `ui`
-   - `ai`
-   - `system`
-   - `bug`
-   - `docs`
-
-5. Enable branch protection for `main` by requiring Pull Requests before merging. This prevents team members from pushing changes directly to `main`.
-6. Create a `.gitignore` file to exclude unnecessary files.
-
-Example `.gitignore`:
-
-```gitignore
-venv/
-__pycache__/
-*.py[cod]
-.env
-*.db
-dist/
-build/
+# assistant/system/autostart.py                (Member C)
+def enable_autostart() -> None: ...
+def disable_autostart() -> None: ...
+def is_autostart_enabled() -> bool: ...
 ```
 
-### 4.2 Daily Git Workflow
+**Important threading rule:** the hotkey callback runs on a *background thread*. Member A must never touch widgets directly from it; use a Qt Signal to show the window. Same for streaming: `ask()` runs in a worker thread, the UI updates through signals.
 
-Every team member should follow these steps when starting a task.
+---
 
-**Step 1: Get the latest code**
+## 4. Week-by-Week Plan
+
+### Week 1: Foundation (19–25 Oct)
+| Member | Goal |
+|---|---|
+| **A** | Project skeleton in `main.py`, bubble, chat window, tray icon, settings dialog (using dummy backend) |
+| **B** | Gemini connection (non-streaming), API key storage with `keyring`, clear error messages |
+| **C** | GitHub setup + project skeleton with dummy functions (Day 1), global hotkey, selected-text capture |
+
+**Milestone 1 (25 Oct):** Hotkey opens the assistant, user asks a question, Gemini answers.
+
+### Week 2: Core Features (26 Oct – 1 Nov)
+| Member | Goal |
+|---|---|
+| **A** | Streaming display, Markdown + code blocks, copy buttons, history panel |
+| **B** | Streaming, conversation memory, SQLite history |
+| **C** | Active-window detection, screenshot capture, first unit tests |
+
+**Milestone 2 (1 Nov):** Streaming chat + history + "Explain this" for selected text.
+
+### Week 3: Smart Features (2–8 Nov)
+| Member | Goal |
+|---|---|
+| **A** | "Explain my screen" button, dark/light themes, animations |
+| **B** | Context-aware prompts, image input, Ollama provider |
+| **C** | Windows auto-start, integration testing, bug list, README + architecture diagram |
+
+**Milestone 3 (8 Nov):** Feature complete (screen explain, context modes, Ollama).
+
+### Week 4: Packaging and Presentation (9–15 Nov)
+| Member | Goal |
+|---|---|
+| **A** | PyInstaller build, Inno Setup installer, UI fixes |
+| **B** | Error handling polish, rate limits, cleanup, docstrings |
+| **C** | Test on 2–3 laptops, final README, demo video, slides, GitHub Release v1.0.0 |
+
+**Milestone 4 (15 Nov):** Release v1.0.0 and final demo.
+
+> The last 2 days of Week 4 are only for bug fixing and presentation practice. **No new features.**
+
+---
+
+## 5. GitHub Workflow (summary)
+
+Repo owner: **Member C**. Full details are in Member C's guide; every member follows the same daily flow:
 
 ```bash
 git checkout main
 git pull origin main
-```
-
-**Step 2: Create a new branch for your task**
-
-```bash
-git checkout -b feature/hotkey-support
-```
-
-**Step 3: Make changes and commit them**
-
-```bash
+git checkout -b feature/<short-name>
+# ...work...
 git add .
-git commit -m "feat(system): add global hotkey listener"
+git commit -m "feat(ui): add settings dialog"
+git push -u origin feature/<short-name>
+# open a Pull Request on GitHub, link the issue ("Closes #5"), request a review
 ```
 
-**Step 4: Push your branch to GitHub**
+Rules:
+1. Never push directly to `main` (branch protection is on).
+2. Every PR needs at least 1 review from another member. Reviewers: A and B review each other's work; C reviews both and merges.
+3. One PR = one task. Keep branches alive for at most 2–3 days.
+4. Branch names: `feature/<name>`, `fix/<name>`. Commit format: `type(area): message` with types `feat`, `fix`, `docs`, `test`, `refactor`.
+5. Never commit API keys, `.env`, `venv/`, or `*.db`.
+6. Pull `main` every morning.
 
-```bash
-git push -u origin feature/hotkey-support
-```
-
-**Step 5: Open a Pull Request**
-
-- Open a Pull Request on GitHub.
-- Link the related issue, for example, `Closes #5`.
-- Ask at least one other team member to review your code.
-- After approval, use **Squash and merge**.
-
-**Step 6: Update your local main branch**
-
-After the Pull Request has been merged:
-
-```bash
-git checkout main
-git pull origin main
-```
-
-Then create a new branch for your next task.
-
-### 4.3 Naming Rules
-
-| Item | Format | Example |
-|---|---|---|
-| Branch | `feature/<name>` or `fix/<name>` | `feature/streaming-response` |
-| Commit | `type(area): message` | `fix(ui): overlay position on second monitor` |
-
-Use these commit types:
-
-- `feat` — Add a new feature.
-- `fix` — Fix a bug.
-- `docs` — Update documentation.
-- `test` — Add or update tests.
-- `refactor` — Improve code structure without changing its behavior.
-
-### 4.4 How to Track Team Progress
-
-Use the following GitHub features to see who is doing what:
-
-- **Commits / `git log`:** See who made each change and when.
-- **Pull Requests:** Review changes and see who merged them.
-- **Projects board:** Check the status and owner of each task.
-- **Insights → Contributors:** See contribution statistics for the team. These can also help during the final presentation.
-- **Optional:** Connect the GitHub repository to a WhatsApp or Discord group, or share daily progress updates there.
-
-### 4.5 How to Avoid Merge Conflicts
-
-- Work only in your assigned folders. If another file needs changes, coordinate with its owner.
-- Pull the latest changes from `main` regularly.
-- Keep branches short-lived, ideally no longer than 2–3 days.
-- Keep each Pull Request focused on one task.
-- Agree on shared interfaces before developing features in parallel.
-
-### 4.6 Team Communication
-
-- **Daily check-in (10 minutes):** Each member shares what they did yesterday, what they will do today, and whether they have any blockers.
-- **Weekly meeting (Sunday, 30 minutes):** Review the current milestone and assign tasks for the next week.
-- **Bug tracking:** Report bugs and new ideas through GitHub Issues so that important information is not lost in chat messages.
+Communication: 10-minute daily check-in in the group chat (yesterday / today / blockers) and a 30-minute meeting every Sunday.
 
 ---
 
-## 5. Development Environment
-
-All team members should use the same development environment.
-
-### Requirements
-
-- Windows 10 or Windows 11.
-- Python 3.11 or newer.
-- Git installed and configured.
-- A code editor such as VS Code.
-- A Gemini API key for each member.
-
-**Important:** Develop directly on Windows rather than WSL because the floating window, global hotkeys, and screenshot features need to interact with Windows applications.
-
-### Project Setup
-
-Open PowerShell and run:
+## 6. Environment Setup (everyone, on Windows, not WSL)
 
 ```powershell
-cd desktop-ai-assistant
-
+git clone https://github.com/<owner-username>/AcademicProjects.git
+cd AcademicProjects\desktop-ai-assistant
 python -m venv venv
-
 venv\Scripts\Activate.ps1
-
 pip install -r requirements.txt
 ```
 
-If PowerShell blocks virtual environment activation, use Command Prompt and run:
+If PowerShell blocks activation: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, or use `venv\Scripts\activate.bat` in CMD.
 
-```bat
-venv\Scripts\activate.bat
-```
-
-### API Key Security
-
-- Each member should use their own Gemini API key.
-- Never upload API keys, passwords, or other secrets to GitHub.
-- Store API keys securely using `keyring` or another appropriate secure storage method.
-- If a new package is installed, update `requirements.txt` and mention the change in the Pull Request.
+Each member uses their **own** Gemini API key (free from Google AI Studio). Keys are never committed.
 
 ---
 
-## 6. Definition of Done
+## 7. Definition of Done (for every task)
 
-A task is complete only when all applicable requirements below are satisfied.
-
-- [ ] The code runs correctly without unexpected crashes.
-- [ ] No API keys or passwords are hardcoded in the source code.
-- [ ] Important functions have comments or docstrings where needed.
-- [ ] The changes have been reviewed through a Pull Request.
-- [ ] Relevant tests pass.
-- [ ] The README or documentation is updated if the feature affects users.
-- [ ] The changes have been merged into `main`.
+- [ ] Code runs without crashing
+- [ ] No API keys or passwords in the code
+- [ ] Functions have docstrings/comments where needed
+- [ ] Reviewed and approved via Pull Request
+- [ ] Relevant tests pass
+- [ ] README/docs updated if users will notice the change
+- [ ] Merged into `main` and the issue is closed
 
 ---
 
-## 7. Project Risks and Solutions
+## 8. Risks and Solutions
 
 | Risk | Solution |
 |---|---|
-| Gemini free-tier limit is reached. | Use Ollama as a local alternative and reduce unnecessary API requests. |
-| The global hotkey does not work in some applications. | Allow users to open the assistant through the system tray icon as well. |
-| Antivirus software warns about the `.exe`. | Test the installer properly and document any warnings in the README. |
-| A team member becomes unavailable. | Discuss task reassignment during the weekly meeting and update the GitHub Projects board. |
-| Merge conflicts occur. | Follow folder ownership rules, use shared interfaces, and keep Pull Requests small. |
+| Gemini free-tier limit reached | Ollama fallback, fewer requests, short answers |
+| Hotkey conflicts with another app | Configurable hotkey + tray icon and bubble as alternatives |
+| Antivirus flags the `.exe` | Use one-folder build, test the installer, note it in README |
+| A member is unavailable | Reassign tasks in the weekly meeting, update the board |
+| Merge conflicts | Folder ownership, shared interfaces, small PRs |
+| Real code not ready for others | Everyone pushes dummy versions on Day 1 |
 
 ---
 
-## 8. Final Deliverables
+## 9. Final Deliverables (15 Nov 2026)
 
-By 15 November 2026, the team should prepare the following:
-
-- [ ] A GitHub repository with clean commit history, issues, and Pull Requests.
-- [ ] A Windows `.exe` installer published through GitHub Releases.
-- [ ] A complete README with features, installation instructions, and screenshots.
-- [ ] An architecture diagram explaining the application's structure.
-- [ ] A 2–3 minute demo video showing the main features.
-- [ ] Presentation slides explaining the project, its features, and team contributions.
-
----
-
-## Final Goal
-
-By the end of this four-week roadmap, the team should have a working Windows Desktop AI Assistant that supports AI chat, streaming responses, chat history, selected-text explanations, screenshot-based screen explanations, keyboard shortcuts, and local AI models through Ollama.
-
-The project should also be tested, documented, packaged as a Windows application, and ready for its final demonstration on 15 November 2026.
+- [ ] GitHub repo with clean history, issues and PRs
+- [ ] Windows installer published on GitHub Releases (v1.0.0)
+- [ ] Complete README (features, install guide, screenshots)
+- [ ] Architecture diagram
+- [ ] 2–3 minute demo video
+- [ ] Presentation slides with each member's contribution
