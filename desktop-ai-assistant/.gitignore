@@ -1,0 +1,36 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# ---------- Virtual environments ----------
+venv/
+.venv/
+env/
+
+# ---------- Secrets (KABHI GitHub par push na karein) ----------
+.env
+*.env
+secrets.json
+config.local.json
+
+# ---------- Local data ----------
+*.db
+*.sqlite3
+*.log
+
+# ---------- Build / packaging ----------
+build/
+dist/
+*.exe
+*.spec.bak
+
+# ---------- IDE / Editor ----------
+.vscode/
+.idea/
+
+# ---------- OS files ----------
+.DS_Store
+Thumbs.db
+desktop.ini
