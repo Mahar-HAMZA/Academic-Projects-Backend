@@ -8,9 +8,9 @@ This file is the shared overview for the whole team. Each member also has a deta
 
 | Member | Part | Detailed guide |
 |---|---|---|
-| **A** | GUI (everything the user sees) | [docs/MEMBER_A_GUI.md](docs/gui_member.md) |
-| **B** | Backend (AI + data) | [docs/MEMBER_B_BACKEND.md](docs/backend_member.md) |
-| **C** | System integration, repo owner, testing, docs, release | [docs/MEMBER_C_SYSTEM_OWNER.md](docs/system_member.md) |
+| **A** | GUI (everything the user sees) | [docs/gui_member.md](docs/gui_member.md) |
+| **B** | Backend (AI + data) | [docs/backend_member.md](docs/backend_member.md) |
+| **C** | System integration, repo owner, testing, docs, release | [docs/system_member.md](docs/system_member.md) |
 
 ---
 
