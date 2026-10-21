@@ -5,9 +5,20 @@ from assistant.storage import history
 from assistant.system.capture import get_active_app
 
 
-def test_ask_yields_text():
+
+def test_ask_yields_text(monkeypatch):
+    from assistant.ai import client
+
+    def fake_gemini(prompt, image=None, mode="general"):
+        yield "Test "
+        yield "response"
+
+    monkeypatch.setattr(client, "ask_gemini", fake_gemini)
+
     chunks = list(ask("hello"))
-    assert chunks and all(isinstance(c, str) for c in chunks)
+    assert chunks == ["Test ", "response"]
+    assert all(isinstance(chunk, str) for chunk in chunks)
+
 
 
 def test_pick_mode():
